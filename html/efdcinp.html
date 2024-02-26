@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EFDC Input Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>EFDC Input Editor</h1>
+
+    <label for="cardSelector">Select Card:</label>
+    <select id="cardSelector"></select>
+
+    <label for="textInput">Card Content:</label>
+    <textarea id="textInput" rows="10"></textarea>
+
+    <button onclick="loadFile()">Load File</button>
+    <button id="button1" onclick="confirmChanges()">Confirm Changes</button>
+    <button onclick="saveFile()">Save File</button>
+    <script>
+
+        var optionData = {};
+
+        // 创建一个字符串数组
+        var Card = ["C1", "C1A", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C9A", "C10",
+            "C11", "C11A", "C11B", "C12", "C12A", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "C20",
+            "C21", "C22", "C23", "C24", "C25", "C26", "C27", "C28", "C29", "C30", "C31", "C32", "C33",
+            "C34", "C35", "C36", "C36A", "C36B", "C37", "C38", "C39", "C40", "C41", "C42", "C42A", "C43A", "C43B", "C43C",
+            "C43D", "C43E", "C44", "C45", "C45A", "C45B", "C45C", "C45D", "C46", "C46A", "C46C", "C46D", "C47", "C48", "C49",
+            "C50", "C51", "C52", "C53", "C54", "C55", "C56", "C57", "C58", "C59", "C60", "C61", "C62", "C63", "C64", "C65",
+            "C66", "C66A", "C66B", "C67", "C68", "C69", "C70", "C71", "C71A", "C71B", "C72", "C73", "C74", "C75", "C76",
+            "C77", "C78", "C79", "C80", "C81", "C82", "C83", "C84", "C85", "C86", "C87", "C88", "C89", "C90", "C91", "C91A", "C91B"]
+        // 向字典中添加键值对
+        for (var i = 0; i < Card.length; i++) {
+            optionData[i] = '';
+        }
+
+        // 在下拉框选项更改时自动触发函数
+        document.getElementById("cardSelector").addEventListener("change", updateTextarea);
+
+        // 初始化页面时调用一次以确保初始状态正确
+        updateTextarea(0);
+        // JavaScript functions to interact with the UI
+        function updateTextarea(kk) {
+
+            if (kk==0){
+            var selectedOption = 0;
+            var selectedCard = Card[selectedOption];
+            }
+            else{
+            // 获取当前选中的选项
+            var selectedOption = document.getElementById("cardSelector").selectedIndex;
+            // 获取与选项对应的文本内容
+            var selectedCard = Card[selectedOption];
+            }
+
+            // 获取文本框元素并设置其值
+            document.getElementById("textInput").value = optionData[selectedOption];
+
+            // 获取按钮元素并设置其文本
+            document.getElementById("button1").innerText = "确认修改" + selectedCard;
+        }
+
+        function confirmChanges() {
+            // 获取当前选中的选项
+            var selectedOption = document.getElementById("cardSelector").selectedIndex;
+
+            // 获取与选项对应的文本内容
+            var selectedCard = Card[selectedOption];
+
+            // 获取文本框元素并设置其值
+            optionData[selectedOption] = document.getElementById("textInput").value;
+
+            // 实现逻辑以确认更改
+            alert("已修改" + Card[selectedOption] + "!");
+        }
+
+        function loadFile() {
+            // 创建一个 input 元素，用于触发文件选择对话框
+            var input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".inp";  // 设置接受的文件类型
+
+            // 添加 change 事件监听器，当用户选择文件后执行逻辑
+            input.addEventListener("change", function () {
+                var file = input.files[0];
+
+                if (file) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        var fileContent = e.target.result;
+
+                        // 模拟 C# 代码中的处理逻辑，将文件内容分块并存储到相应的数组中
+                        var blocks = fileContent.split("-------------------------------------------------------------------------------");
+                        blocks = blocks.map(function (block) {
+                            return block.trim();
+                        });
+
+                        // 更新 optionData 数组
+                        for (var i = 0; i < CardTitleC.length && i < blocks.length; i++) {
+                            optionData[i] = blocks[i];
+                        }
+
+                        // 更新界面元素
+                        var selectedOption = document.getElementById("cardSelector").selectedIndex;
+                        document.getElementById("textInput").value = optionData[selectedOption];
+
+                        // 弹出提示
+                        alert("文件已加载");
+                    };
+
+                    reader.readAsText(file);
+                }
+            });
+        }
+
+        function saveFile() {
+            // Implement logic to save file
+            alert("File saved!");
+        }
+
+
+        // Populate card selector dropdown with options
+        var cardSelector = document.getElementById("cardSelector");
+        var cardTitles = [
+            "C1 项目标题",
+            "C1A 网格配置和时间积分模式选择",
+            "C2 重启、一般控制和诊断开关",
+            "C3 外部模式求解选项参数和开关",
+            "C4 长期质量传输积分开关",
+            "C5 动量平流和水平扩散开关及其他开关",
+            "C6 溶解和悬浮物质传输开关",
+            "C7 与时间相关的整数参数",
+            "C8 与时间相关的实数参数",
+            "C9 与空间相关和平滑参数",
+            "C9A 垂直空间相关参数",
+            "C10 垂直层厚度",
+            "C11 网格、粗糙度和深度参数",
+            "C11A 两层动量通量和曲率加速度校正因子",
+            "C11B 角落单元底部应力校正选项(仅2TL)",
+            "C12 湍流扩散参数",
+            "C12A 湍流闭合选项",
+            "C13 湍流闭合参数",
+            "C14 潮汐和大气强迫、地下水和子网格通道参数",
+            "C15 周期性强迫(潮汐)分量符号和周期",
+            "C16 水位或压力边界条件参数",
+            "C17 周期性强迫(潮汐)水位或压力边界条件强迫",
+            "C18 南开边界上的周期性强迫(潮汐)水位或压力",
+            "C19 西开边界上的周期性强迫(潮汐)水位或压力",
+            "C20 东开边界上的周期性强迫(潮汐)水位或压力",
+            "C21 北开边界上的周期性强迫(潮汐)水位或压力",
+            "C22 指定沉积物和毒物数量以及浓度时间序列数量",
+            "C23 速度、体积源/汇、流量控制和回水/引水数据",
+            "C24 体积源/汇位置、大小和浓度序列",
+            "C25 恒定体积源的恒定进流浓度",
+            "C26 恒定体积源的恒定进流浓度",
+            "C27 射流/漩涡源位置、几何形状和湍流吸入参数",
+            "C28 射流/漩涡求解控制和输出控制参数",
+            "C29 射流/漩涡源参数和排放/浓度序列ID",
+            "C30 恒定射流/漩涡源的恒定进流浓度",
+            "C31 恒定射流/漩涡源的恒定进流浓度",
+            "C32 依赖水位或压力的流量信息",
+            "C33 流量引水、热量或物质添加和回水数据",
+            "C34 恒定引水和回水浓度升高",
+            "C35 恒定引水和回水浓度升高",
+            "C36 沉积物初始化和水柱/床层表征选项",
+            "C36A 沉积物初始化和水柱/床层表征选项",
+            "C36B 沉积物初始化和水柱/床层表征选项",
+            "C37 床层力学性质参数集1",
+            "C38 床层力学性质参数集2",
+            "C39 重复NSED次的黏性沉积物参数集1数据行",
+            "C40 重复NSED次的黏性沉积物参数集2数据行",
+            "C41 重复NSND次的非黏性沉积物参数集1数据行",
+            "C42 重复NSND次的非黏性沉积物参数集2数据行",
+            "C42A 非黏性沉积物参数集3(床载公式参数)",
+            "C43A 有毒污染物初始条件",
+            "C43B 有毒动力学选项标志",
+            "C43C 有毒时间步长和挥发开关",
+            "C43D 有毒物质总衰变和生物降解参数",
+            "C43E 有毒物质挥发参数",
+            "C44 有毒吸附选项、扩散和混合",
+            "C45 有毒污染物与沉积物相互作用参数",
+            "C45A 有毒污染物与基于非沉积物有机碳(OC)相互作用参数",
+            "C45B 有毒污染物与基于非沉积物有机碳(OC)相互作用参数",
+            "C45C 水柱中有毒污染物POC分数分布",
+            "C45D 沉积床中有毒污染物POC分数分布",
+            "C46 浮力、温度、着色剂数据和浓度边界条件数据",
+            "C46A 冰效应",
+            "C46C 大气位置和风函数系数",
+            "C46D 大气参数",
+            "C47 南边界上的浓度边界条件位置",
+            "C48 南浓度边界上的恒定底层浓度",
+            "C49 南浓度边界上的恒定底层浓度",
+            "C50 南浓度边界上的恒定表层浓度",
+            "C51 南浓度边界上的恒定表层浓度",
+            "C52 西边界上的浓度边界条件位置和序列标识符",
+            "C53 西浓度边界上的恒定底层浓度",
+            "C54 西浓度边界上的恒定底层浓度",
+            "C55 西浓度边界上的恒定表层浓度",
+            "C56 西浓度边界上的恒定表层浓度",
+            "C57 东边界上的浓度边界条件位置和序列标识符",
+            "C58 东浓度边界上的恒定底层浓度",
+            "C59 东浓度边界上的恒定底层浓度",
+            "C60 东浓度边界上的恒定表层浓度",
+            "C61 东浓度边界上的恒定表层浓度",
+            "C62 北边界上的浓度边界条件位置和序列标识符",
+            "C63 北浓度边界上的恒定底层浓度",
+            "C64 北浓度边界上的恒定底层浓度",
+            "C65 北浓度边界上的恒定表层浓度",
+            "C66 北浓度边界上的恒定表层浓度",
+            "C66A 浓度数据同化",
+            "C66B 浓度数据同化",
+            "C67 漂移器数据(前4个参数用于子漂移器,后6个用于子拉格朗日)",
+            "C68 初始漂移器位置(与子漂移器一起使用)",
+            "C69 笛卡尔网格单元中心经纬度常数",
+            "C70 控制写入ASCII或二进制转储文件",
+            "C71 控制水平平面标量场等值线绘制 - 仅残差",
+            "C71A 控制水平平面沉积物床层性质等值线绘制",
+            "C71B 食物链模型输出控制",
+            "C72 控制EFDC_Explorer链接和水位残差输出",
+            "C73 控制水平平面残差速度矢量作图",
+            "C74 未使用",
+            "C75 未使用",
+            "C76 未使用",
+            "C77 未使用",
+            "C78 未使用",
+            "C79 未使用",
+            "C80 控制3D场输出",
+            "C81 3D场输出激活和尺度",
+            "C82 原位谐波分析参数",
+            "C83 谐波分析位置和开关",
+            "C84 控制写入时间序列文件",
+            "C85 控制写入时间序列文件",
+            "C86 控制写入时间序列文件",
+            "C87 控制写入时间序列文件",
+            "C88 特定位置和时间的高频输出",
+            "C89 未使用",
+            "C90 未使用",
+            "C91 生成NETCDF文件的选项",
+            "C91A NETCDF输出选项",
+            "C91B NETCDF输出选项"
+        ];
+
+        cardTitles.forEach(function (title, index) {
+            var option = document.createElement("option");
+            option.value = index;
+            option.text = title;
+            cardSelector.add(option);
+        });
+    </script>
+</body>
+
+</html>
